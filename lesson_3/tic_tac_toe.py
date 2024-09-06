@@ -8,8 +8,7 @@ has 3 in a row, the game ends in a tie.
 import random
 import os
 
-BOARD_LENGTH = 3
-MOVES_AVAILABLE = BOARD_LENGTH * BOARD_LENGTH
+BOARD_LENGTH = 5
 # MAX_SCORE = 3
 
 def winner(board):
@@ -44,9 +43,10 @@ def update_scores(winner_mark, player_mark, scores):
 
             break
 
-def display_board(board):
+def display_board(board, player_mark):
     ''' displays the board '''
     print('\n---> Board Currently\n')
+    print(f"You are {player_mark['user']} and Computer is {player_mark['computer']}.")
     for i in range(BOARD_LENGTH):
         for j in range(BOARD_LENGTH):
             print(f'  {board[i][j]}', end="")
@@ -56,6 +56,7 @@ def display_board(board):
         print()
         if i < (BOARD_LENGTH - 1):
             print('--------+' * (BOARD_LENGTH))
+    print()
 
 def find_empty_positions(board):
     ''' returns the positions that are still empty and available '''
@@ -138,7 +139,7 @@ def goodbye():
 def winner_or_tie(board, scores, player_mark):
     ''' function to determine whether the game has met it's ending condition, i.e. 
     whether somebosy has won or the board is full and it's a tie '''
-    display_board(board)
+    display_board(board, player_mark)
     game_winner = winner(board)
     if game_winner is not None:
         update_scores(game_winner, player_mark, scores)

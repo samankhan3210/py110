@@ -20,6 +20,8 @@ WINNING_MOVES = [[(i, j) for i in range(BOARD_LENGTH)] for j in range(BOARD_LENG
 INITIAL_BOARD = [[str(i * BOARD_LENGTH + j + 1) for j in range(BOARD_LENGTH)]
             for i in range(BOARD_LENGTH)]
 
+FIRST_MOVE = ["user", "computer", "choose"]
+
 def get_horizontal_coordinates(board, board_row_index, mark, max_move_len):
     ''' returns the horizontal coordinates of a player on the board in a row 
     that are either winning or about to win, we can set this based on the 
@@ -200,13 +202,17 @@ def computer_move(board, player_mark):
     marks the move on the board '''
     print("COMPUTER'S TURN")
 
-    ai_move = computer_ai(board, player_mark)
-    if ai_move:
-        row, col = ai_move[0], ai_move[1]
+    move = computer_ai(board, player_mark)
+    if move:
+        row, col = move[0], move[1]
 
     else:
         moves_available = find_empty_positions(board)
-        move = random.choice(moves_available)
+
+        if 5 in moves_available:
+            move = 5
+        else:
+            move = random.choice(moves_available)
         row, col = get_row_col(move)
 
     board[row][col] = player_mark['computer']
@@ -255,18 +261,42 @@ def win_or_tie(board, scores, player_mark):
 
     return False
 
-def play_again():
-    ''' asks the user if he wants to play again or not '''
+def yes_or_no(prompt):
+    ''' asks the user if yes or no question '''
     again = ' '
     while again not in ['y', 'n', 'yes', 'no']:
-        again = input("Do you want to play again? (y/n) ")
+        again = input(prompt)
         again = again.strip().lower()
 
     if again[0] == 'n':
-        goodbye()
         return False
 
     return True
+
+def alternate_player(current_player):
+    ''' alternates b/w user and computer '''
+    if current_player == 'user':
+        return 'computer'
+    return 'user'
+
+def make_move(board, player_mark, current_player):
+    ''' makes a move on the board based on the current player'''
+    if current_player == 'user':
+        user_move(board, player_mark)
+    else:
+        computer_move(board, player_mark)
+
+def who_goes_first():
+    ''' randomly decides who goes first '''
+    first_player = random.choice(FIRST_MOVE)
+    if first_player == "choose":
+        if yes_or_no("Do you want to go first? (y/n) "):
+            first_player = "user"
+        else:
+            first_player = "computer"
+
+    print(f'{first_player.capitalize()} is going first. ')
+    return first_player
 
 def main():
     ''' main function that contains the executional flow of the program '''
@@ -276,7 +306,7 @@ def main():
         'computer' : ''
     }
     choose_mark(player_mark)
-
+    current_player = who_goes_first()
     while True:
         scores = {
         'user' : 0,
@@ -293,15 +323,13 @@ def main():
 
                 print("---> CURRENT BOARD")
                 display_board(board, player_mark)
-                user_move(board, player_mark)
 
-                if win_or_tie(board, scores, player_mark):
-                    display_board(board, player_mark)
-                    break
-
-                computer_move(board, player_mark)
+                make_move(board, player_mark, current_player)
+                current_player = alternate_player(current_player)
                 os.system('cls || clear')
 
+            print("---> ENDING BOARD")
+            display_board(board, player_mark)
             game_round += 1
 
         if scores['user'] > scores['computer']:
@@ -309,7 +337,8 @@ def main():
         else:
             print('Computer is the winner of the overall match.')
 
-        if not play_again():
+        if not yes_or_no("Do you want to play again? (y/n) "):
+            goodbye()
             break
 
 if __name__ == "__main__":

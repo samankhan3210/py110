@@ -1,0 +1,25 @@
+{
+    "welcome" : "\n\t\t\tWelcome to Twenty-One",
+    "line" : "===================================================================",
+    "rules_message" : "The rules for the game are as follows : ",
+    "rules" : {
+        "deck" : "1. We have standard 52 cards deck.",
+        "player" : "2. The game consists of a dealer (COMPUTER) and a player (YOU). Both are initially dealt a hand of two cards. You see your both cards, but can only see one of the dealer's cards.",
+        "card_values" : "3. All of the card values are pretty straightforward. (2 - 10 ---> Face Value); (Jack, Queen, King ---> 10): (Ace ---> 1 or 11 -> If the sum of the hand exceeds 21, then one of the value of Ace is 1 else 11.)",
+        "goal" : "4. The goal of Twenty-One is to try to get as close to 21 as possible without going over. If you go over 21, it's a bust, and you lose.",
+        "player_turn" : "5. You wil always go first, and can decide to either 'hit' or 'stay'. A 'hit' means the you want to be dealt another card. You can continue to hit as many times as you want. The turn is over when the you either bust or stay. If you bust, the game is over, and the dealer wins.",
+        "dealer_turns" : "6. When you decide to stay, it's the dealer's turn. If the dealer busts, then the player wins. Else, one with the highest value wins.",
+        "continue" : "< ----- > Press ENTER to CONTINUE < ----- >"
+    },
+    "hit_or_stay" : "Do you want to 'hit' or 'stay'? (h/s) ",
+    "bust": "{player} BUSTED!",
+    "winner" : "< ----- > {winner} is the winner of this game! < ----- > ",
+    "hit" : "You chose to hit!",
+    "stay" : "You chose to stay!",
+    "dealers_cards" : "Dealer has : {dealer_card} and unknown card",
+    "players_cards" : "You have: {player_cards}",
+    "new_card" : "Your new card is :  {card_drawn}",
+    "play_again" : "Do you want to play again? (y/n) ",
+    "error_message" : "Incorrect Input, Try Again! ",
+    "goodbye" : "Bye! It was nice playing with you."
+}

@@ -85,7 +85,8 @@ def get_ace_value(current_value):
         return 11
     return 1
 
-def calculate_score_values(cards, score = 0):
+def calculate_score_values(cards):
+    score = 0
     for card in cards:
         if card != "Ace":
             score += CARD_VALUES[card]
@@ -98,8 +99,9 @@ def clear_screen(timer = 1):
     time.sleep(timer)
     os.system("cls || clear")
 
-def player_turn(current_deck, player_cards, dealer_card, player_score):
+def player_turn(current_deck, player_cards, dealer_card):
     valid_choices = ["hit", "h", "stay", "s"]
+    player_score = calculate_score_values(player_cards)
     print("---> Your Turn")
     while True:
         display_cards_at_hand(player_cards, dealer_card)
@@ -111,8 +113,8 @@ def player_turn(current_deck, player_cards, dealer_card, player_score):
         else:
             if choice in ["hit", "h"]:
                 print(MESSAGES['hit'])
-                new_card = hit(current_deck, player_cards)
-                player_score = calculate_score_values([new_card], player_score)
+                hit(current_deck, player_cards)
+                player_score = calculate_score_values(player_cards)
                 if bust(player_score, PLAYER):
                     return 0
 
@@ -122,14 +124,17 @@ def player_turn(current_deck, player_cards, dealer_card, player_score):
 
         clear_screen()
 
-def dealer_turn(current_deck, dealer_cards, dealer_score):
+def dealer_turn(current_deck, dealer_cards):
     print("---> Dealer's Turn")
+    dealer_score = calculate_score_values(dealer_cards)
+
     while dealer_score < MIN_DEALER_SCORE:
         print("Dealer has : ",join_and(dealer_cards))
         print(f"Dealer's Score : {dealer_score}")
-        new_card = hit(current_deck, dealer_cards)
-        dealer_score = calculate_score_values([new_card], dealer_score)
-        time.sleep(2)
+        hit(current_deck, dealer_cards)
+        dealer_score = calculate_score_values(dealer_cards)
+        print()
+        time.sleep(1.2)
 
     print("Dealer has : ",join_and(dealer_cards))
     print(f"Dealer's Score : {dealer_score}")
@@ -139,7 +144,7 @@ def dealer_turn(current_deck, dealer_cards, dealer_score):
     return dealer_score
 
 def compare_cards(player_score, dealer_score):
-    print(f"Your Score : {player_score}")
+    print(f"\nYour Score : {player_score}")
     print(f"Dealer's Score : {dealer_score}")
 
     if player_score < dealer_score:
@@ -150,18 +155,14 @@ def compare_cards(player_score, dealer_score):
         print("< ----- > It's a TIE. < ----- > ")
 
 def play_game(deck, cards):
-    player_current_score = calculate_score_values(cards[PLAYER])
-    dealer_current_score = calculate_score_values(cards[DEALER])
-
-    player_new_score = player_turn(deck, cards[PLAYER],
-                                cards[DEALER][0], player_current_score)
+    player_score = player_turn(deck, cards[PLAYER],
+                                cards[DEALER][0])
     clear_screen()
-    if player_new_score:
-        dealer_new_score = dealer_turn(deck, cards[DEALER],
-                                       dealer_current_score)
+    if player_score:
+        dealer_score = dealer_turn(deck, cards[DEALER])
 
-        if dealer_new_score:
-            compare_cards(player_new_score, dealer_new_score)
+        if dealer_score:
+            compare_cards(player_score, dealer_score)
         else:
             display_winner(PLAYER)
 
@@ -172,6 +173,7 @@ def play_again(prompt):
     ''' asks the user if he wants to play again '''
     again = ' '
     while again not in ['y', 'n', 'yes', 'no']:
+        print()
         again = input(MESSAGES[prompt])
         again = again.strip().lower()
 

@@ -66,8 +66,8 @@ def shuffle_deck(deck):
 
 def deal_cards(deck, cards):
     shuffle_deck(deck)
-    cards[PLAYER] = [deck.pop(0), deck.pop(1)]
-    cards[DEALER] = [deck.pop(2), deck.pop(3)]
+    cards[PLAYER] = [deck.pop(), deck.pop()]
+    cards[DEALER] = [deck.pop(), deck.pop()]
 
 def hit(deck, player_cards):
     new_card = deck.pop(0)
@@ -87,11 +87,15 @@ def get_ace_value(current_value):
 
 def calculate_score_values(cards):
     score = 0
+    aces = 0
     for card in cards:
         if card != "Ace":
             score += CARD_VALUES[card]
         else:
-            score += get_ace_value(score)
+            aces += 1
+    
+    for _ in range(aces):
+        score += get_ace_value(score)
 
     return score
 
@@ -103,6 +107,7 @@ def player_turn(current_deck, player_cards, dealer_card):
     valid_choices = ["hit", "h", "stay", "s"]
     player_score = calculate_score_values(player_cards)
     print("---> Your Turn")
+
     while True:
         display_cards_at_hand(player_cards, dealer_card)
         print(f"Your Score : {player_score}")
@@ -116,13 +121,15 @@ def player_turn(current_deck, player_cards, dealer_card):
                 hit(current_deck, player_cards)
                 player_score = calculate_score_values(player_cards)
                 if bust(player_score, PLAYER):
-                    return 0
+                    player_score = 0
+                    break
 
             else:
                 print(MESSAGES['stay'])
-                return player_score
+                break
 
         clear_screen()
+    return player_score
 
 def dealer_turn(current_deck, dealer_cards):
     print("---> Dealer's Turn")
@@ -139,7 +146,7 @@ def dealer_turn(current_deck, dealer_cards):
     print("Dealer has : ",join_and(dealer_cards))
     print(f"Dealer's Score : {dealer_score}")
     if bust(dealer_score, DEALER):
-        return 0
+        dealer_score = 0
 
     return dealer_score
 
